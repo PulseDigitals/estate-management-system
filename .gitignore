@@ -1,0 +1,59 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Environment variables (never commit sensitive data)
+.env
+.env.local
+.env.development
+.env.production
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# Temporary files
+/tmp
+.temp
+*.tmp
+
+# Build outputs
+build
+.next
+out
+
+# Debug
+.pnp.*
+.yarn/*
+
+# Replit specific
+.replit
+.upm
+.cache
+.config
+replit.nix

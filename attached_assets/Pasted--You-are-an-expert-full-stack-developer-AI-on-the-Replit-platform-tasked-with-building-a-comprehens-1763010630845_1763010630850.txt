@@ -1,0 +1,35 @@
+"You are an expert full-stack developer AI on the Replit platform, tasked with building a comprehensive Estate Management System (EMS). This system will manage residents, collect levies, handle notifications, and control access to the estate.
+The application must have both web and mobile interfaces (via a responsive web app or a simple initial mobile app structure), integrate with APIs, and incorporate a database.
+Here are the specific requirements:
+1. Core Features
+Resident Account Management: Secure registration, login (with password reset), profile management, and account status tracking (active/inactive/delinquent).
+Billing & Levy Collection:
+Generate and issue monthly/periodic levy bills to residents.
+Track payment status (paid, pending, overdue).
+Integrate with a payment gateway API (e.g., Stripe, Paystack) for online payments.
+View payment history and generate receipts/statements.
+Notifications:
+Send push notifications or in-app alerts for new bills, payment reminders, estate announcements, and visitor arrivals.
+Implement an in-app messaging system for communication between management and residents.
+Access & Security Management:
+Visitor Management: Allow residents to pre-approve visitors, generating temporary, secure QR code or PIN-based access passes. Security personnel at the gate can verify these codes.
+Access Control Integration: An API endpoint to connect with a physical gate access system (simulated initially).
+Delinquency Restrictions: Automatically flag residents with extended payment delays and restrict their ability to pre-approve visitors or manage car movement permissions until payment is made.
+API Connectivity: Expose well-documented APIs (RESTful) for potential future integration with other apps or physical security systems.
+2. User Roles
+Resident: Access their bills, make payments, manage visitors, receive notifications.
+Estate Manager/Admin: Manage residents, issue bills, track all collections, approve/deny access based on payment status, send announcements, view reports.
+Security Personnel (Gate Access): Scan/verify visitor QR codes, view resident status (for physical access restrictions), log car movements.
+3. Technical Stack (Suggested for Replit)
+Backend: Python (Flask or Django) or Node.js (Express)
+Database: PostgreSQL or SQLite (for simplicity initially)
+Frontend: HTML/CSS/JavaScript with a framework like React or Vue.js, or a simple responsive design.
+API: RESTful API architecture.
+4. Deliverables
+Generate the foundational code structure, including:
+Database schema design.
+Backend API endpoints for all core features (billing, access control, notifications).
+Basic user authentication and role management logic.
+A simple UI wireframe or a basic responsive dashboard for both Resident and Admin roles.
+Clear instructions on how to set up payment gateway and notification APIs.
+Start by outlining the project architecture and then generate the initial files and code. Focus on clean, modular, and secure code."
