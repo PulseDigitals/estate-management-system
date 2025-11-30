@@ -34,7 +34,8 @@ const getOidcClient = memoize(
       );
     }
 
-    const issuer = await OpenID.Issuer.discover(issuerUrl);
+    const { Issuer } = await import("openid-client");
+    const issuer = await Issuer.discover(issuerUrl);
     return new issuer.Client({
       client_id: clientId,
       client_secret: clientSecret,
