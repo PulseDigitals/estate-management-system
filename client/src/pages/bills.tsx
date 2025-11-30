@@ -9,6 +9,10 @@ import { Receipt, Download, CheckCircle, Clock, AlertCircle } from "lucide-react
 import { formatNaira } from "@/lib/currency";
 import type { Bill, Payment } from "@shared/schema";
 
+const API_BASE = import.meta.env.VITE_API_BASE || "";
+const withBase = (path: string) =>
+  path.startsWith("http://") || path.startsWith("https://") ? path : `${API_BASE}${path}`;
+
 export default function Bills() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
@@ -22,7 +26,7 @@ export default function Bills() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = withBase("/api/login");
       }, 500);
       return;
     }
@@ -67,7 +71,7 @@ export default function Bills() {
     try {
       setDownloadingBillId(billId);
 
-      const response = await fetch(`/api/resident/bills/${billId}/pdf`, {
+      const response = await fetch(withBase(`/api/resident/bills/${billId}/pdf`), {
         credentials: 'include',
       });
 

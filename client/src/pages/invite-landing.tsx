@@ -15,6 +15,10 @@ interface InviteData {
   unitNumber?: string;
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE || "";
+const withBase = (path: string) =>
+  path.startsWith("http://") || path.startsWith("https://") ? path : `${API_BASE}${path}`;
+
 export default function InviteLanding() {
   const { token } = useParams<{ token: string }>();
   const [, setLocation] = useLocation();
@@ -37,7 +41,7 @@ export default function InviteLanding() {
       // Store invite token in session storage so it's available after auth redirect
       if (token) {
         // First, store the token in the session via API
-        const response = await fetch('/api/store-invite-token', {
+        const response = await fetch(withBase('/api/store-invite-token'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ inviteToken: token }),
@@ -46,7 +50,7 @@ export default function InviteLanding() {
 
         if (response.ok) {
           // Redirect to Replit Auth login
-          window.location.href = '/api/login';
+          window.location.href = withBase('/api/login');
         } else {
           setError('Failed to process invite. Please try again.');
         }
