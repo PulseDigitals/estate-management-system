@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated, requireAdmin, requireAdminOrAccountant, requireSecurity, requireResident } from "./replitAuth";
+import { setupAuth, isAuthenticated, requireAdmin, requireAdminOrAccountant, requireSecurity, requireResident } from "./oidcAuth";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { format } from "date-fns";
