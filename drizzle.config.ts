@@ -12,3 +12,14 @@ export default defineConfig({
     url: process.env.DATABASE_URL,
   },
 });
+
+import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import * as schema from "@shared/schema";
+
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // ensures SSL works on local dev
+});
+
+export const db = drizzle({ client: pool, schema });

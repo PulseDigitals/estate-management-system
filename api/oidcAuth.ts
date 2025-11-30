@@ -1,4 +1,33 @@
-import * as OpenID from "openid-client";
+const getOidcClient = memoize(
+  async () => {
+    const issuerUrl = process.env.OIDC_ISSUER_URL;
+    const clientId = process.env.OIDC_CLIENT_ID;
+    const clientSecret = process.env.OIDC_CLIENT_SECRET;
+    const redirectUri = process.env.OIDC_REDIRECT_URI;
+
+    console.log("OIDC env", {
+      issuerUrl,
+      clientId,
+      hasSecret: Boolean(clientSecret),
+      redirectUri,
+    });
+
+    if (!issuerUrl || !clientId || !clientSecret || !redirectUri) {
+      throw new Error("Missing OIDC config. Please set OIDC_ISSUER_URL, OIDC_CLIENT_ID, OIDC_CLIENT_SECRET, and OIDC_REDIRECT_URI.");
+    }
+
+    const { Issuer } = await import("openid-client");
+    const issuer = await Issuer.discover(issuerUrl);
+    return new issuer.Client({
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uris: [redirectUri],
+      response_types: ["code"],
+    });
+  },
+  { promise: true, maxAge: 60 * 60 * 1000 }
+
+
 import { Strategy, type VerifyFunction } from "openid-client/passport";
 import passport from "passport";
 import session from "express-session";
