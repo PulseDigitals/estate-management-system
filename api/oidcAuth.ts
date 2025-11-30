@@ -1,4 +1,4 @@
-import { Issuer } from "openid-client";
+import * as OpenID from "openid-client";
 import { Strategy, type VerifyFunction } from "openid-client/passport";
 import passport from "passport";
 import session from "express-session";
@@ -34,7 +34,7 @@ const getOidcClient = memoize(
       );
     }
 
-    const issuer = await Issuer.discover(issuerUrl);
+    const issuer = await OpenID.Issuer.discover(issuerUrl);
     return new issuer.Client({
       client_id: clientId,
       client_secret: clientSecret,
