@@ -3,7 +3,7 @@ import { Strategy, type VerifyFunction } from "openid-client/passport";
 
 import passport from "passport";
 import session from "express-session";
-import type { Express, RequestHandler } from "express";
+import type { Express, RequestHandler, Request, Response, NextFunction } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
@@ -113,7 +113,7 @@ export async function setupAuth(app: Express) {
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
-  app.get("/api/login", (req, res, next) => {
+  app.get("/api/login", (req: Request, res: Response, next: NextFunction) => {
     ensureStrategy(req.hostname);
     
     // Store intended role preference in session
@@ -128,7 +128,7 @@ export async function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  app.get("/api/callback", async (req, res, next) => {
+  app.get("/api/callback", async (req: Request, res: Response, next: NextFunction) => {
     ensureStrategy(req.hostname);
     
     passport.authenticate(`replitauth:${req.hostname}`, {
@@ -263,7 +263,7 @@ export async function setupAuth(app: Express) {
     });
   });
 
-  app.get("/api/logout", (req, res) => {
+  app.get("/api/logout", (req: Request, res: Response) => {
     req.logout(() => {
       res.redirect(
         client.buildEndSessionUrl(config, {
