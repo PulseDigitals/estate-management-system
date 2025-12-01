@@ -24,6 +24,26 @@ import { Download, FileText } from "lucide-react";
 import { format } from "date-fns";
 import type { Vendor } from "@shared/schema";
 
+type VendorStatementTransaction = {
+  id: string;
+  entryDate: string;
+  entryNumber: string;
+  description: string;
+  amount: number;
+  runningBalance: number;
+};
+
+type VendorStatementResponse = {
+  vendor: Vendor;
+  startDate?: string;
+  endDate?: string;
+  openingBalance: number;
+  totalDebits: number;
+  totalCredits: number;
+  closingBalance: number;
+  transactions: VendorStatementTransaction[];
+};
+
 export default function VendorStatement() {
   const [location] = useLocation();
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
@@ -55,7 +75,7 @@ export default function VendorStatement() {
 
   const approvedVendors = vendors?.filter(v => v.status === "approved") || [];
 
-  const { data: statement, isLoading, isFetching } = useQuery({
+  const { data: statement, isLoading, isFetching } = useQuery<VendorStatementResponse | undefined>({
     queryKey: appliedParams ? [
       "/api/accountant/vendors",
       appliedParams.vendorId,
@@ -239,7 +259,7 @@ export default function VendorStatement() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {statement.transactions.map((transaction: any) => (
+                      {statement.transactions.map((transaction) => (
                         <TableRow key={transaction.id} data-testid={`row-transaction-${transaction.id}`}>
                           <TableCell>
                             {format(new Date(transaction.entryDate), "MMM dd, yyyy")}
