@@ -110,8 +110,8 @@ export async function setupAuth(app: Express) {
     }
   };
 
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
+  passport.serializeUser((user: Express.User, cb: (err: any, user?: Express.User | false | null) => void) => cb(null, user));
+  passport.deserializeUser((user: Express.User, cb: (err: any, user?: Express.User | false | null) => void) => cb(null, user));
 
   app.get("/api/login", (req: Request, res: Response, next: NextFunction) => {
     ensureStrategy(req.hostname);
@@ -373,7 +373,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
 // Role-based authorization middleware
 export const requireRole = (allowedRoles: string[]): RequestHandler => {
-  return async (req: any, res, next) => {
+  return async (req: Request & { user?: any; dbUser?: any }, res: Response, next: NextFunction) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Unauthorized - Please log in" });
