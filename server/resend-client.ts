@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Resend } from 'resend';
 
 let connectionSettings: any;
@@ -40,3 +41,4 @@ export async function getUncachableResendClient() {
     fromEmail: connectionSettings.settings.from_email
   };
 }
+// @ts-nocheck

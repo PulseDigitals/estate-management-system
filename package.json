@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx server/index.ts",
+    "lint": "tsc --noEmit",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd client && vite build",
     "build:backend": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",

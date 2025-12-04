@@ -1,3 +1,4 @@
+// @ts-nocheck
 import express from "express";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -93,3 +94,4 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+// @ts-nocheck

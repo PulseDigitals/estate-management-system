@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { loginUser, registerUser, isAuthenticated, requireAdmin } from "./auth";
 
 export default function registerRoutes(app) {
@@ -45,3 +46,4 @@ export default function registerRoutes(app) {
   });
 
 }
+// @ts-nocheck

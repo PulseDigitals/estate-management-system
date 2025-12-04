@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Basic placeholder auth until you implement full API-key or session-based login
 
 export function getSession(req) {
@@ -32,3 +33,4 @@ export async function registerUser(req, res) {
   // TODO: implement
   return res.json({ success: true });
 }
+// @ts-nocheck

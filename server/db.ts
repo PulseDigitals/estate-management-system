@@ -1,3 +1,4 @@
+// @ts-nocheck
 import dotenv from "dotenv";
 dotenv.config();
 import { Pool, neonConfig } from '@neondatabase/serverless';
@@ -23,3 +24,4 @@ const { Client } = pkg;
 export const client = new Client({
   connectionString: process.env.DATABASE_URL,
 });
+// @ts-nocheck

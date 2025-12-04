@@ -145,7 +145,7 @@ export default function Home() {
             <div className="text-2xl font-semibold" data-testid="text-bills-count">{recentBills.length}</div>
             <p className="text-xs text-muted-foreground">Last 30 days</p>
             <Link href="/bills">
-              <Button variant="link" className="px-0 mt-2" data-testid="link-view-all-bills">
+              <Button variant="ghost" className="px-0 mt-2" data-testid="link-view-all-bills">
                 View all bills →
               </Button>
             </Link>
@@ -161,7 +161,7 @@ export default function Home() {
             <div className="text-2xl font-semibold" data-testid="text-visitors-count">{activeVisitors.length}</div>
             <p className="text-xs text-muted-foreground">Pre-approved access</p>
             <Link href="/visitors">
-              <Button variant="link" className="px-0 mt-2" data-testid="link-manage-visitors">
+              <Button variant="ghost" className="px-0 mt-2" data-testid="link-manage-visitors">
                 Manage visitors →
               </Button>
             </Link>
@@ -177,7 +177,7 @@ export default function Home() {
             <div className="text-2xl font-semibold" data-testid="text-notifications-count">{unreadCount}</div>
             <p className="text-xs text-muted-foreground">Unread messages</p>
             <Link href="/notifications">
-              <Button variant="link" className="px-0 mt-2" data-testid="link-view-notifications">
+              <Button variant="ghost" className="px-0 mt-2" data-testid="link-view-notifications">
                 View notifications →
               </Button>
             </Link>
@@ -284,3 +284,4 @@ export default function Home() {
     </div>
   );
 }
+
