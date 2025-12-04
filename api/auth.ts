@@ -78,7 +78,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       const setCookie = cookie.serialize("session", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         path: "/",
         maxAge: 7 * 24 * 60 * 60,
       });
@@ -100,7 +100,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const clearCookie = cookie.serialize("session", "", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       path: "/",
       maxAge: 0,
     });

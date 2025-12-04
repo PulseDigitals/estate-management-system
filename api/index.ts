@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
@@ -17,6 +18,24 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+
+// CORS for frontend (Vercel) with credentials support
+const allowedOrigin =
+  process.env.CORS_ORIGIN ||
+  process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` ||
+  undefined;
+
+if (allowedOrigin) {
+  app.use(cors({
+    origin: allowedOrigin,
+    credentials: true,
+  }));
+  // Preflight support
+  app.options("*", cors({
+    origin: allowedOrigin,
+    credentials: true,
+  }));
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
