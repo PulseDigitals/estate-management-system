@@ -52,6 +52,13 @@ import UserManagement from "@/pages/admin/user-management";
 import InviteLanding from "@/pages/invite-landing";
 import type { Resident } from "@shared/schema";
 
+import LoginIndex from "./pages/login";
+import AdminLogin from "./pages/login/admin";
+import AccountantLogin from "./pages/login/accountant";
+import SecurityLogin from "./pages/login/security";
+import ResidentLogin from "./pages/login/resident";
+
+
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
 
@@ -59,6 +66,11 @@ function Router() {
     return (
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/login" element={<LoginIndex />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/login/accountant" element={<AccountantLogin />} />
+        <Route path="/login/security" element={<SecurityLogin />} />
+        <Route path="/login/resident" element={<ResidentLogin />} />
         <Route path="/invite/:token" component={InviteLanding} />
         <Route component={Landing} />
       </Switch>

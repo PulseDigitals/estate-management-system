@@ -3421,3 +3421,18 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+// Adjust types and table names to match your actual schema
+type Role = "admin" | "resident" | "security" | "accountant";
+
+// Example assuming db.query.users exists and user has: id, email, role, passwordHash
+export async function getUserByEmailAndRole(email: string, role: Role) {
+  const result = await db.query.users.findMany({
+    where: (fields, { and, eq }) =>
+      and(eq(fields.email, email), eq(fields.role, role)),
+    limit: 1,
+  });
+
+  return result?.[0] ?? null;
+}
+
