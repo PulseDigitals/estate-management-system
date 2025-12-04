@@ -1,13 +1,17 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
-
 export type Role = "admin" | "resident" | "security" | "accountant";
 
 export interface AuthUser {
   id: string;
   email: string;
   role: Role;
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET must be set");
 }
 
 export function parseCookies(cookieHeader?: string | null): Record<string, string> {
@@ -22,7 +26,7 @@ export function parseCookies(cookieHeader?: string | null): Record<string, strin
   return out;
 }
 
-// 👉 Can be used in any handler (Vercel, Express-style, etc.)
+// Can be used in any handler (Vercel, Express-style, etc.)
 export function getUserFromCookie(cookieHeader?: string | null): AuthUser | null {
   const cookies = parseCookies(cookieHeader);
   const token = cookies["session"];

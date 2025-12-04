@@ -27,21 +27,29 @@ import { fromZodError } from "zod-validation-error";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
-import { getUserFromCookie, Role, AuthUser } from "../shared/auth-utils";
+import type { Role, AuthUser } from "../shared/auth-utils";
 
 // Express-style middleware
 export function requireAuth(allowedRoles?: Role[]) {
   return (req: any, res: any, next: any) => {
-    const user = getUserFromCookie(req.headers.cookie || null) as AuthUser | null;
-    if (!user) {
+    const sessionUser: AuthUser | null =
+      req.isAuthenticated?.() && req.user?.claims
+        ? {
+            id: req.user.claims.sub,
+            email: req.user.claims.email,
+            role: (req.user.claims.role as Role) || "resident",
+          }
+        : null;
+
+    if (!sessionUser) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (allowedRoles && !allowedRoles.includes(sessionUser.role)) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
     // Attach user to request for later handlers
-    (req as any).authUser = user;
+    (req as any).authUser = sessionUser;
     next();
   };
 }
@@ -109,35 +117,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
+  });
 
-    // Complete signup - Creates resident profile for new users
-    app.post('/api/signup/complete', isAuthenticated, async (req: any, res) => {
-      try {
-        const userId = req.user.claims.sub;
-        const user = await storage.getUser(userId);
+  // Complete signup - Creates resident profile for new users
+  app.post('/api/signup/complete', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
 
-        if (!user) {
-          return res.status(404).json({ message: "User not found" });
-        }
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-        // SECURITY: Prevent role downgrade for admin/security users
-        if (user.role && user.role !== "resident") {
-          return res.status(403).json({
-            message: "Admin and Security accounts cannot use self-signup"
-          });
-        }
+      // SECURITY: Prevent role downgrade for admin/security users
+      if (user.role && user.role !== "resident") {
+        return res.status(403).json({
+          message: "Admin and Security accounts cannot use self-signup"
+        });
+      }
 
-        // Check if user already has a resident profile
-        const existingResident = await storage.getResidentByUserId(userId);
-        if (existingResident) {
-          return res.status(400).json({
-            message: "You have already completed signup"
-          });
-        }
+      // Check if user already has a resident profile
+      const existingResident = await storage.getResidentByUserId(userId);
+      if (existingResident) {
+        return res.status(400).json({
+          message: "You have already completed signup"
+        });
+      }
 
-        // Security: Only allow resident role during self-signup
-        // Admin and Security accounts must be created by an admin
-        const { unitNumber, phoneNumber, serviceCharge } = req.body;
+      // Security: Only allow resident role during self-signup
+      // Admin and Security accounts must be created by an admin
+      const { unitNumber, phoneNumber, serviceCharge } = req.body;
 
         if (!unitNumber || !unitNumber.trim()) {
           return res.status(400).json({
