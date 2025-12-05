@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install && npm run build --prefix client",
+  "buildCommand": "npm install && npm run build",
   "outputDirectory": "client/dist",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://estate-management-system-ccbt.onrender.com/api/$1" }
