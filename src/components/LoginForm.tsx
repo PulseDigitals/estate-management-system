@@ -5,10 +5,26 @@ type Props = {
 };
 
 export default function LoginForm({ role }: Props) {
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Use Replit/oidc auth: redirect to server login endpoint with role hint
-    window.location.href = `/api/login?role=${encodeURIComponent(role)}`;
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      credentials: "include", // required to send session cookie
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: `${role}@demo.local`, // change when your form collects email
+        password: "password", // replace when your UI supports password input
+        role,
+      }),
+    });
+
+    if (res.ok) {
+      window.location.href = "/";
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || "Authentication failed");
+    }
   };
 
   return (
@@ -21,7 +37,7 @@ export default function LoginForm({ role }: Props) {
       </h2>
 
       <p className="text-sm text-gray-600 mb-6">
-        You’ll be redirected to the secure sign-in page to authenticate as{" "}
+        You will be redirected to the secure sign-in page to authenticate as{" "}
         <strong>{role}</strong>.
       </p>
 

@@ -1,28 +1,42 @@
+import { ReactNode, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  allowedRoles: string[];
+  children: ReactNode;
+  allowedRoles?: string[]; // optional now
   redirectTo?: string;
 }
 
-export function ProtectedRoute({ children, allowedRoles, redirectTo = "/" }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
+export function ProtectedRoute({
+  children,
+  allowedRoles,
+  redirectTo = "/login",
+}: ProtectedRouteProps) {
+  const { user, isLoading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!isLoading && user) {
-      // Check if user's role is allowed
-      if (!user.role || !allowedRoles.includes(user.role)) {
-        console.warn(`Access denied: User role '${user.role}' not in allowed roles:`, allowedRoles);
+    if (!isLoading) {
+      // First check — user not logged in
+      if (!isAuthenticated) {
+        console.warn("Access denied: User not authenticated.");
         setLocation(redirectTo);
+        return;
+      }
+
+      // Second check — role not permitted
+      if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+        console.warn(
+          `Access denied: User role '${user.role}' not in allowed roles:`,
+          allowedRoles
+        );
+        setLocation("/not-authorized");
       }
     }
-  }, [user, isLoading, allowedRoles, redirectTo, setLocation]);
+  }, [isLoading, isAuthenticated, user, allowedRoles, redirectTo, setLocation]);
 
-  // Show loading state while checking authentication
+  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -31,11 +45,9 @@ export function ProtectedRoute({ children, allowedRoles, redirectTo = "/" }: Pro
     );
   }
 
-  // If user doesn't have the required role, don't render anything
-  // (useEffect will handle redirect)
-  if (!user || !user.role || !allowedRoles.includes(user.role)) {
-    return null;
-  }
+  // Do not render page until access validated
+  if (!isAuthenticated) return null;
+  if (allowedRoles && user && !allowedRoles.includes(user.role)) return null;
 
   return <>{children}</>;
 }

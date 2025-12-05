@@ -11,6 +11,7 @@ import { Link } from "wouter";
 import { formatNaira } from "@/lib/currency";
 import type { Resident, Bill, Visitor, Notification } from "@shared/schema";
 import yoduLogo from "@assets/yodu-logo.jpg";
+import { withApiBase } from "@/lib/apiBase";
 
 export default function Home() {
   const { toast } = useToast();
@@ -24,7 +25,7 @@ export default function Home() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = withApiBase("/login");
       }, 500);
       return;
     }

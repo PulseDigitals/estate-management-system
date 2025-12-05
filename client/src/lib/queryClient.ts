@@ -1,12 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-
-const API_BASE = import.meta.env.VITE_API_BASE || "";
-
-function withBase(url: string): string {
-  if (!API_BASE) return url;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  return `${API_BASE}${url}`;
-}
+import { withApiBase as withBase } from "./apiBase";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
