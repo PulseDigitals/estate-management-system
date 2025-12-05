@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import estateImage from "@assets/Real-Estate-2_1763014188361.jpg";
-import { API_BASE, withApiBase } from "@/lib/apiBase";
 
 export default function Landing() {
   return (
@@ -19,7 +18,7 @@ export default function Landing() {
               <span className="text-xl font-semibold text-gray-900">Magodo Estate Management System</span>
             </div>
             <Button asChild data-testid="button-login" className="min-h-9">
-              <a href={withApiBase("/login")}>Sign In</a>
+              <a href="/api/login">Sign In</a>
             </Button>
           </div>
         </div>
@@ -74,7 +73,7 @@ export default function Landing() {
                     asChild 
                     data-testid="button-signin-admin"
                   >
-                    <a href={withApiBase("/login?role=admin")}>
+                    <a href="/api/login?role=admin">
                       <Shield className="h-4 w-4 mr-2" />
                       Admin Login
                     </a>
@@ -98,7 +97,7 @@ export default function Landing() {
                     asChild 
                     data-testid="button-signin-resident"
                   >
-                    <a href={withApiBase("/login?role=resident")}>
+                    <a href="/api/login?role=resident">
                       <Building2 className="h-4 w-4 mr-2" />
                       Resident Login
                     </a>
@@ -269,7 +268,7 @@ export default function Landing() {
               Join modern residential estates using our platform to streamline operations and improve resident satisfaction.
             </p>
             <Button size="lg" className="min-h-12 px-8" asChild>
-              <a href={withApiBase("/login")}>Get Started Today</a>
+              <a href="/api/login">Get Started Today</a>
             </Button>
           </div>
         </div>

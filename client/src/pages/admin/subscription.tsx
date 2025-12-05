@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -325,4 +324,3 @@ export default function SubscriptionManagement() {
     </div>
   );
 }
-// @ts-nocheck

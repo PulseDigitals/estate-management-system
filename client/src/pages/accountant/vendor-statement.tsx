@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
@@ -306,4 +305,3 @@ export default function VendorStatement() {
     </div>
   );
 }
-// @ts-nocheck

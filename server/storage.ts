@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   users,
   residents,
@@ -3422,4 +3421,3 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
-// @ts-nocheck

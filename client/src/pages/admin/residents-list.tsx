@@ -20,10 +20,6 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import type { Resident, Bill, Payment } from "@shared/schema";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "";
-const withBase = (path: string) =>
-  path.startsWith("http://") || path.startsWith("https://") ? path : `${API_BASE}${path}`;
-
 type ResidentWithUser = Resident & { user: { id: string; email: string; firstName: string; lastName: string } };
 
 export default function ResidentsListPage() {
@@ -155,7 +151,7 @@ export default function ResidentsListPage() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = withBase("/api/login");
+          window.location.href = "/api/login";
         }, 500);
         return;
       }
@@ -1329,7 +1325,7 @@ function InvoicesDialog({ open, onOpenChange, resident }: { open: boolean; onOpe
     try {
       setDownloadingBillId(billId);
 
-      const response = await fetch(withBase(`/api/admin/residents/${resident.id}/bills/${billId}/pdf`), {
+      const response = await fetch(`/api/admin/residents/${resident.id}/bills/${billId}/pdf`, {
         credentials: 'include',
       });
 
