@@ -45,3 +45,25 @@ export default function registerRoutes(app) {
   });
 
 }
+// ---- ADD RESIDENT ----
+app.post("/api/admin/residents", isAuthenticated, requireAdmin, async (req, res) => {
+  try {
+    const residentData = req.body;
+
+    // 🛠 TODO: Replace this with actual database insert
+    const newResident = {
+      id: Math.floor(Math.random() * 100000),
+      ...residentData,
+      createdAt: new Date(),
+    };
+
+    console.log("New resident created:", newResident);
+
+    // Return created data
+    res.status(201).json({ message: "Resident created", resident: newResident });
+
+  } catch (err) {
+    console.error("Error adding resident:", err);
+    res.status(500).json({ error: "Failed to add resident" });
+  }
+});
