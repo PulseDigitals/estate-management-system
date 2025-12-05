@@ -5,18 +5,16 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import path from "path";
 import { fileURLToPath } from "url";
-
-// Import auth functions
 import { loginUser, getSession } from "./auth.js";
+import { storage } from "../api/storage.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 
 // ---------------------- SESSION SETUP ---------------------- //
-
 const PgSession = connectPg(session);
 const sessionTtlMs = 7 * 24 * 60 * 60 * 1000; // 7 days
 const isProduction = process.env.NODE_ENV === "production";
@@ -39,34 +37,29 @@ const sessionOptions: session.SessionOptions = {
 };
 
 if (usePgStore) {
-  try {
-    const store = new PgSession({
-      conString: databaseUrl,
-      tableName: "sessions",
-      createTableIfMissing: true,
-      ttl: sessionTtlMs / 1000,
-    });
+  const store = new PgSession({
+    conString: databaseUrl,
+    tableName: "sessions",
+    createTableIfMissing: true,
+    ttl: sessionTtlMs / 1000,
+  });
 
-    store.on("error", (err: any) => {
-      console.warn("[Session] Postgres store error — fallback to memory:", err?.message);
-      sessionOptions.store = undefined;
-    });
+  store.on("error", (err: any) => {
+    console.warn("[Session] Postgres store error, fallback to memory:", err?.message);
+    sessionOptions.store = undefined;
+  });
 
-    sessionOptions.store = store;
-  } catch (err: any) {
-    console.warn("[Session] Failed to init PG Store — fallback:", err?.message);
-  }
+  sessionOptions.store = store;
 } else {
-  console.warn("[Session] DATABASE_URL missing — memory session active (dev only)");
+  console.warn("[Session] DATABASE_URL missing, memory session active (dev only)");
 }
 
 app.use(session(sessionOptions));
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// ---------------------- CORS FIX — MUST COME BEFORE ROUTES ---------------------- //
-
+// ---------------------- CORS ---------------------- //
 app.use(
   cors({
     origin: [
@@ -80,11 +73,8 @@ app.use(
 );
 
 // ---------------------- BACKEND AUTH API ---------------------- //
-
-// Login endpoint
 app.post("/api/auth/login", loginUser);
 
-// Return current logged in user
 app.get("/api/auth/user", (req, res) => {
   const user = getSession(req);
 
@@ -95,20 +85,29 @@ app.get("/api/auth/user", (req, res) => {
   res.json(user);
 });
 
-// Logout endpoint
 app.post("/api/auth/logout", (req, res) => {
   req.session.destroy(() => res.json({ success: true }));
 });
 
-// ---------------------- STATIC SPA HANDLER ---------------------- //
+// ---------------------- ADMIN ROUTES ---------------------- //
+app.get("/api/admin/residents", async (_req, res) => {
+  try {
+    const residents = await storage.getAllResidents();
+    res.json(residents);
+  } catch (err: any) {
+    console.error("Failed to fetch residents:", err?.message || err);
+    res.status(500).json({ message: "Failed to fetch residents" });
+  }
+});
 
+// ---------------------- STATIC SPA HANDLER ---------------------- //
 const clientDist = path.join(__dirname, "../client/dist");
 app.use(express.static(clientDist));
 
-app.get("*", (req, res) => {
+app.get("*", (_req, res) => {
   res.sendFile(path.join(clientDist, "index.html"));
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
