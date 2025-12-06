@@ -1,68 +1,28 @@
-import { loginUser, registerUser, isAuthenticated, requireAdmin } from "./auth";
+import { loginUser, registerUser, isAuthenticated, requireAdmin } from "./auth.js";
+
+// Fake in-memory store – replace with DB later
+const residentStore: any[] = [];
 
 export default function registerRoutes(app) {
 
   // ---- REGISTER ----
   app.post("/api/register", async (req, res) => {
-    const { email, password, firstName, lastName } = req.body;
+    try {
+      const { email, password, firstName, lastName } = req.body;
 
-    const exists = await storage.getUserByEmail(email);
-    if (exists) return res.status(400).json({ message: "Email exists" });
+      // TODO: real DB lookup
+      // const exists = await storage.getUserByEmail(email);
+      // if (exists) return res.status(400).json({ message: "Email exists" });
 
-    const user = await registerUser({ email, password, firstName, lastName });
+      const user = await registerUser({ email, password, firstName, lastName });
 
-    res.json({ message: "Account created", user });
+      res.json({ message: "Account created", user });
+    } catch (err) {
+      console.error("Register error:", err);
+      res.status(500).json({ message: "Registration failed" });
+    }
   });
 
   // ---- LOGIN ----
   app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
-
-    const user = await loginUser(email, password);
-    if (!user)
-      return res.status(401).json({ message: "Invalid credentials" });
-
-    req.session.userId = user.id;
-    res.json({ message: "Logged in", user });
-  });
-
-  // ---- LOGOUT ----
-  app.get("/api/logout", (req, res) => {
-    req.session.destroy(() => {
-      res.json({ message: "Logged out" });
-    });
-  });
-
-  // ---- PROTECTED EXAMPLE ----
-  app.get("/api/me", isAuthenticated, async (req, res) => {
-    const user = await storage.getUser(req.session.userId!);
-    res.json(user);
-  });
-
-  // ---- ADMIN EXAMPLE ----
-  app.get("/api/admin/stats", requireAdmin, async (req, res) => {
-    res.json({ stats: "Super secret admin stats!" });
-  });
-
-}
-// ---- ADD RESIDENT ----
-app.post("/api/admin/residents", isAuthenticated, requireAdmin, async (req, res) => {
-  try {
-    const residentData = req.body;
-
-    const newResident = {
-      id: Math.floor(Math.random() * 100000),
-      ...residentData,
-      createdAt: new Date(),
-    };
-
-    residentStore.push(newResident);
-
-    res.status(201).json({ message: "Resident created", resident: newResident });
-
-  } catch (err) {
-    console.error("Error adding resident:", err);
-    res.status(500).json({ error: "Failed to add resident" });
-  }
-});
-
