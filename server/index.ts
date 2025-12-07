@@ -100,6 +100,43 @@ app.get("/api/admin/residents", async (_req, res) => {
   }
 });
 
+// Create resident (minimal pass-through to storage)
+app.post("/api/admin/residents", async (req, res) => {
+  try {
+    const {
+      email,
+      firstName,
+      lastName,
+      unitNumber,
+      phoneNumber,
+      streetName,
+      propertyType,
+      emergencyContactName,
+      emergencyContactPhone,
+      notes,
+    } = req.body || {};
+
+    const resident = await storage.createResident({
+      email,
+      firstName,
+      lastName,
+      unitNumber,
+      phoneNumber,
+      streetName,
+      propertyType: propertyType || "apartment",
+      emergencyContactName: emergencyContactName || null,
+      emergencyContactPhone: emergencyContactPhone || null,
+      notes: notes || null,
+      status: "active",
+    });
+
+    res.status(201).json(resident);
+  } catch (err: any) {
+    console.error("Failed to create resident:", err?.message || err);
+    res.status(500).json({ message: "Failed to create resident" });
+  }
+});
+
 // ---------------------- STATIC SPA HANDLER ---------------------- //
 const clientDist = path.join(__dirname, "../client/dist");
 app.use(express.static(clientDist));
