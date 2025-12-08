@@ -18,7 +18,7 @@ export default function Landing() {
               <span className="text-xl font-semibold text-gray-900">Magodo Estate Management System</span>
             </div>
             <Button asChild data-testid="button-login" className="min-h-9">
-              <a href="/api/login">Sign In</a>
+              <a href="/login">Sign In</a>
             </Button>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function Landing() {
                     asChild 
                     data-testid="button-signin-admin"
                   >
-                    <a href="/api/login?role=admin">
+                    <a href="/login/admin">
                       <Shield className="h-4 w-4 mr-2" />
                       Admin Login
                     </a>
@@ -97,7 +97,7 @@ export default function Landing() {
                     asChild 
                     data-testid="button-signin-resident"
                   >
-                    <a href="/api/login?role=resident">
+                    <a href="/login/resident">
                       <Building2 className="h-4 w-4 mr-2" />
                       Resident Login
                     </a>
@@ -268,7 +268,7 @@ export default function Landing() {
               Join modern residential estates using our platform to streamline operations and improve resident satisfaction.
             </p>
             <Button size="lg" className="min-h-12 px-8" asChild>
-              <a href="/api/login">Get Started Today</a>
+              <a href="/login">Get Started Today</a>
             </Button>
           </div>
         </div>
